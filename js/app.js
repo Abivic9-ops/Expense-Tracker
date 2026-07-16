@@ -1,6 +1,6 @@
 /**
- * Expense Tracker — Core Functionality
- * Phase 2: CRUD, DOM rendering, localStorage persistence.
+ * Expense Tracker — Full Functionality
+ * Phase 3: CRUD, DOM rendering, charts, analytics, localStorage.
  */
 
 (function () {
@@ -46,6 +46,9 @@
 
   var sidebarMonthly = document.getElementById('sidebar-monthly-total');
   var sidebarSub = document.getElementById('sidebar-monthly-sub');
+
+  var chartCanvas = document.getElementById('doughnut-chart');
+  var chartLegend = document.getElementById('chart-legend');
 
   /* ═══════════════════════════════════════════
      HELPERS
@@ -221,6 +224,121 @@
   }
 
   /* ═══════════════════════════════════════════
+     RENDER — CHART
+     ═══════════════════════════════════════════ */
+  function getCategoryTotals() {
+    var totals = {};
+    expenses.forEach(function (e) {
+      if (!totals[e.category]) {
+        totals[e.category] = 0;
+      }
+      totals[e.category] += e.amount;
+    });
+    return totals;
+  }
+
+  function renderChart() {
+    var ctx = chartCanvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var size = 200;
+
+    chartCanvas.width = size * dpr;
+    chartCanvas.height = size * dpr;
+    chartCanvas.style.width = size + 'px';
+    chartCanvas.style.height = size + 'px';
+    ctx.scale(dpr, dpr);
+
+    var centerX = size / 2;
+    var centerY = size / 2;
+    var outerRadius = size / 2 - 4;
+    var innerRadius = outerRadius * 0.62;
+
+    ctx.clearRect(0, 0, size, size);
+
+    var totals = getCategoryTotals();
+    var categories = Object.keys(totals);
+    var grandTotal = 0;
+
+    categories.forEach(function (cat) {
+      grandTotal += totals[cat];
+    });
+
+    if (grandTotal === 0) {
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2, true);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.fill();
+
+      ctx.font = '500 13px Inter, sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('No data', centerX, centerY);
+      return;
+    }
+
+    var startAngle = -Math.PI / 2;
+    var gap = 0.03;
+
+    categories.forEach(function (cat) {
+      var sliceAngle = (totals[cat] / grandTotal) * Math.PI * 2;
+      var info = getCategoryInfo(cat);
+
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, outerRadius, startAngle + gap, startAngle + sliceAngle - gap);
+      ctx.arc(centerX, centerY, innerRadius, startAngle + sliceAngle - gap, startAngle + gap, true);
+      ctx.closePath();
+      ctx.fillStyle = info.color;
+      ctx.fill();
+
+      startAngle += sliceAngle;
+    });
+
+    /* Center text */
+    ctx.font = '700 22px Inter, sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(formatCurrency(grandTotal), centerX, centerY - 6);
+
+    ctx.font = '500 11px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillText('Total Spent', centerX, centerY + 14);
+  }
+
+  function renderChartLegend() {
+    var totals = getCategoryTotals();
+    var categories = Object.keys(totals);
+    var grandTotal = 0;
+
+    expenses.forEach(function (e) { grandTotal += e.amount; });
+
+    if (grandTotal === 0) {
+      chartLegend.innerHTML = '<p class="chart-legend-empty">No data to display</p>';
+      return;
+    }
+
+    /* Sort by amount descending */
+    categories.sort(function (a, b) { return totals[b] - totals[a]; });
+
+    var html = '';
+    categories.forEach(function (cat) {
+      var info = getCategoryInfo(cat);
+      var pct = ((totals[cat] / grandTotal) * 100).toFixed(1);
+      html +=
+        '<div class="legend-item">' +
+          '<span class="legend-dot" style="background:' + info.color + '"></span>' +
+          '<span class="legend-label">' + escapeHTML(cat) + '</span>' +
+          '<span class="legend-value">' + formatCurrency(totals[cat]) + '</span>' +
+          '<span class="legend-pct">' + pct + '%</span>' +
+        '</div>';
+    });
+
+    chartLegend.innerHTML = html;
+  }
+
+  /* ═══════════════════════════════════════════
      RENDER ALL
      ═══════════════════════════════════════════ */
   function renderAll() {
@@ -228,6 +346,8 @@
     renderStats();
     renderBreakdown();
     renderSidebar();
+    renderChart();
+    renderChartLegend();
   }
 
   /* ═══════════════════════════════════════════
