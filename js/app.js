@@ -395,15 +395,54 @@
   }
 
   /* ═══════════════════════════════════════════
+     THEME TOGGLE
+     ═══════════════════════════════════════════ */
+  var THEME_KEY = 'expense_tracker_theme';
+  var themeToggle = document.querySelector('.theme-toggle');
+
+  function getPreferredTheme() {
+    var stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'dark' || stored === 'light') return stored;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+    updateToggleIcon(theme);
+  }
+
+  function updateToggleIcon(theme) {
+    if (!themeToggle) return;
+    themeToggle.innerHTML = theme === 'dark'
+      ? '<i data-lucide="moon" aria-hidden="true"></i>'
+      : '<i data-lucide="sun" aria-hidden="true"></i>';
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons();
+    }
+  }
+
+  function toggleTheme() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  }
+
+  /* ═══════════════════════════════════════════
      INIT
      ═══════════════════════════════════════════ */
   function init() {
+    applyTheme(getPreferredTheme());
+
     loadFromStorage();
     renderAll();
 
     form.addEventListener('submit', handleFormSubmit);
     tbody.addEventListener('click', handleTableClick);
     clearAllBtn.addEventListener('click', handleClearAll);
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
