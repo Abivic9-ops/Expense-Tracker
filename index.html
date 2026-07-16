@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker — Track, Manage &amp; Save</title>
+  <meta name="description" content="A clean, modern expense tracker to log spending, categorize transactions, and visualize where your money goes.">
+  <meta property="og:title" content="Expense Tracker — Track, Manage &amp; Save">
+  <meta property="og:description" content="Log expenses, categorize spending, and visualize your financial habits with a premium dashboard.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Expense Tracker",
+    "description": "A modern expense tracking dashboard for logging, categorizing, and visualizing personal spending.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web Browser"
+  }
+  </script>
+</head>
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1 class="brand-name">Expense Tracker</h1>
+            <p class="brand-tagline">Track. Manage. Save.</p>
+          </div>
+        </div>
+        <div class="sidebar-divider" role="separator"></div>
+      </div>
+
+      <div class="sidebar-body">
+        <nav class="sidebar-nav" aria-label="Dashboard navigation">
+          <a href="#" class="nav-item active" aria-current="page">
+            <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i data-lucide="receipt" aria-hidden="true"></i>
+            <span>Expenses</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i data-lucide="tag" aria-hidden="true"></i>
+            <span>Categories</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i data-lucide="bar-chart-3" aria-hidden="true"></i>
+            <span>Reports</span>
+          </a>
+          <a href="#" class="nav-item">
+            <i data-lucide="settings" aria-hidden="true"></i>
+            <span>Settings</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="sidebar-bottom-divider" role="separator"></div>
+          <div class="sidebar-info-card" aria-label="Monthly spending summary">
+            <p class="info-label">This Month</p>
+            <p class="info-value" id="sidebar-monthly-total">$0.00</p>
+            <p class="info-sub" id="sidebar-monthly-sub">No expenses yet</p>
+          </div>
+          <div class="sidebar-info-card sidebar-info-card--tip" aria-label="Financial tip">
+            <p class="info-label">Quick Tip</p>
+            <p class="info-text">Track every expense to understand your spending habits and save more each month.</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Header -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h2 class="header-title">Welcome back!</h2>
+          <p class="header-subtitle">Here is a summary of your recent expenses</p>
+        </div>
+        <div class="header-right">
+          <button class="theme-toggle" type="button" aria-label="Toggle theme">
+            <i data-lucide="sun" aria-hidden="true"></i>
+          </button>
+          <div class="user-info">
+            <img src="assets/avatar.jpg" alt="User avatar" class="user-avatar" width="38" height="38">
+            <span class="user-name">Utawazi</span>
+            <i data-lucide="chevron-down" class="dropdown-icon" aria-hidden="true"></i>
+          </div>
+        </div>
+      </header>
+
+      <div class="main-body">
+
+      <!-- Add Expense Card -->
+      <section class="card add-expense-card" aria-label="Add new expense">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon card-icon--purple" aria-hidden="true">
+              <i data-lucide="plus-circle"></i>
+            </div>
+            <h3 class="card-title">Add New Expense</h3>
+          </div>
+        </div>
+        <form id="expense-form" class="expense-form" novalidate>
+          <div class="form-group">
+            <label for="expense-description">Description</label>
+            <input type="text" id="expense-description" name="description" placeholder="What did you spend on?" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label for="expense-amount">Amount</label>
+            <input type="number" id="expense-amount" name="amount" placeholder="0.00" step="0.01" min="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="expense-category">Category</label>
+            <select id="expense-category" name="category" required>
+              <option value="" disabled selected>Select category</option>
+              <option value="Food">Food</option>
+              <option value="Transport">Transport</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Bills">Bills</option>
+              <option value="Health">Health</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i data-lucide="plus" aria-hidden="true"></i>
+            Add Expense
+          </button>
+        </form>
+      </section>
+
+      <!-- Stats Grid -->
+      <section class="stats-grid" aria-label="Expense statistics">
+        <div class="stat-card">
+          <div class="stat-icon stat-icon--purple" aria-hidden="true">
+            <i data-lucide="dollar-sign"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Expenses</span>
+            <span class="stat-value" id="stat-total">$0.00</span>
+            <span class="stat-period stat-period--purple">All time</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon--green" aria-hidden="true">
+            <i data-lucide="receipt"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Total Transactions</span>
+            <span class="stat-value" id="stat-count">0</span>
+            <span class="stat-period stat-period--green">All time</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon--orange" aria-hidden="true">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Daily Average</span>
+            <span class="stat-value" id="stat-avg">$0.00</span>
+            <span class="stat-period stat-period--orange">Per day</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon stat-icon--blue" aria-hidden="true">
+            <i data-lucide="arrow-up-right"></i>
+          </div>
+          <div class="stat-content">
+            <span class="stat-label">Highest Expense</span>
+            <span class="stat-value" id="stat-highest">$0.00</span>
+            <span class="stat-period stat-period--blue">Single transaction</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Content Grid: Table + Analytics -->
+      <div class="content-grid">
+
+        <!-- Expenses Table -->
+        <section class="card expenses-card" aria-label="Recent expenses list">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="card-icon card-icon--purple" aria-hidden="true">
+                <i data-lucide="list"></i>
+              </div>
+              <h3 class="card-title">Recent Expenses</h3>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table class="expenses-table" aria-label="Expenses table">
+              <thead>
+                <tr>
+                  <th scope="col">Description</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Date</th>
+                  <th scope="col"><span class="sr-only">Actions</span></th>
+                </tr>
+              </thead>
+              <tbody id="expenses-tbody">
+              </tbody>
+            </table>
+            <div id="empty-state" class="empty-state">
+              <div class="empty-state-icon" aria-hidden="true">
+                <i data-lucide="inbox"></i>
+              </div>
+              <p class="empty-state-title">No expenses yet</p>
+              <p class="empty-state-text">Add your first expense using the form above</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Analytics Column -->
+        <div class="analytics-column">
+
+          <!-- Doughnut Chart -->
+          <section class="card chart-card" aria-label="Spending by category chart">
+            <div class="card-header">
+              <h3 class="card-title">Spending by Category</h3>
+            </div>
+            <div class="chart-container">
+              <div class="chart-canvas-wrapper">
+                <canvas id="doughnut-chart" width="200" height="200" role="img" aria-label="Doughnut chart showing spending distribution by category"></canvas>
+              </div>
+              <div id="chart-legend" class="chart-legend">
+                <p class="chart-legend-empty">No data to display</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Total Breakdown -->
+          <section class="card breakdown-card" aria-label="Financial breakdown">
+            <div class="card-header">
+              <h3 class="card-title">Total Breakdown</h3>
+            </div>
+            <div class="breakdown-content">
+              <div class="breakdown-row">
+                <span class="breakdown-label">Total Income</span>
+                <span class="breakdown-value breakdown-value--green" id="income-display">$0.00</span>
+              </div>
+              <div class="breakdown-row">
+                <span class="breakdown-label">Total Expenses</span>
+                <span class="breakdown-value breakdown-value--red" id="expense-display">$0.00</span>
+              </div>
+              <div class="breakdown-divider" role="separator"></div>
+              <div class="breakdown-row breakdown-row--total">
+                <span class="breakdown-label">Balance</span>
+                <span class="breakdown-value breakdown-value--purple" id="balance-display">$0.00</span>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- Clear All -->
+      <div class="clear-all-wrapper">
+        <button type="button" class="btn btn-danger" id="clear-all-btn" aria-label="Clear all expenses">
+          <i data-lucide="trash-2" aria-hidden="true"></i>
+          Clear All Expenses
+        </button>
+      </div>
+
+      </div><!-- /.main-body -->
+
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
