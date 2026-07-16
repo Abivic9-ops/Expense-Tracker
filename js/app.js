@@ -50,6 +50,8 @@
   var chartCanvas = document.getElementById('doughnut-chart');
   var chartLegend = document.getElementById('chart-legend');
 
+  var clearAllWrapper = document.querySelector('.clear-all-wrapper');
+
   /* ═══════════════════════════════════════════
      HELPERS
      ═══════════════════════════════════════════ */
@@ -348,6 +350,15 @@
     renderSidebar();
     renderChart();
     renderChartLegend();
+
+    /* Show/hide clear all button */
+    if (clearAllWrapper) {
+      if (expenses.length > 0) {
+        clearAllWrapper.classList.add('is-visible');
+      } else {
+        clearAllWrapper.classList.remove('is-visible');
+      }
+    }
   }
 
   /* ═══════════════════════════════════════════

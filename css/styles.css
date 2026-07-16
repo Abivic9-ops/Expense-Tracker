@@ -1109,3 +1109,173 @@ select:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ═══════════════════════════════════════════
+   PHASE 4 — POLISH & INTERACTIONS
+   ═══════════════════════════════════════════ */
+
+/* Card hover elevation */
+.card {
+  transition: box-shadow var(--duration-base) var(--ease), transform var(--duration-base) var(--ease);
+}
+
+.add-expense-card:hover,
+.expenses-card:hover,
+.chart-card:hover,
+.breakdown-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Form input focus animation */
+.form-group input,
+.form-group select {
+  transition: border-color var(--duration-fast) var(--ease),
+              box-shadow var(--duration-fast) var(--ease),
+              background-color var(--duration-fast) var(--ease);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  background-color: #FAFBFE;
+}
+
+/* Form validation — invalid state */
+.form-group input:invalid:not(:placeholder-shown),
+.form-group select:invalid:not([value=""]) {
+  border-color: var(--color-danger);
+}
+
+/* Button press feedback */
+.btn-primary:active {
+  box-shadow: 0 1px 4px rgba(91, 61, 245, 0.2);
+}
+
+.btn-danger:active {
+  box-shadow: 0 1px 4px rgba(245, 81, 99, 0.2);
+}
+
+/* Table row hover — subtle highlight */
+.expenses-table tbody tr {
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.expenses-table tbody tr:hover {
+  background: var(--color-row-hover);
+}
+
+/* Delete button — reveal on row hover */
+.expenses-table tbody tr .btn-icon {
+  opacity: 0.5;
+  transition: opacity var(--duration-fast) var(--ease),
+              background var(--duration-fast) var(--ease),
+              color var(--duration-fast) var(--ease);
+}
+
+.expenses-table tbody tr:hover .btn-icon {
+  opacity: 1;
+}
+
+/* Theme toggle — rotation on hover */
+.theme-toggle:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.theme-toggle:active {
+  transform: scale(0.92);
+}
+
+/* User info — subtle hover */
+.user-info {
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-md);
+  transition: background var(--duration-fast) var(--ease);
+}
+
+.user-info:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Sidebar nav active indicator */
+.nav-item {
+  position: relative;
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: #fff;
+  border-radius: 0 3px 3px 0;
+  opacity: 0.8;
+}
+
+/* Empty state — subtle pulse */
+.empty-state-icon {
+  animation: softPulse 3s ease-in-out infinite;
+}
+
+@keyframes softPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Clear all button — only visible when expenses exist */
+.clear-all-wrapper {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease);
+}
+
+.clear-all-wrapper.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Smooth page load */
+body {
+  animation: pageLoad 0.4s ease-out;
+}
+
+@keyframes pageLoad {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Print styles */
+@media print {
+  .sidebar,
+  .dashboard-header,
+  .add-expense-card,
+  .analytics-column,
+  .clear-all-wrapper,
+  .cell-actions,
+  .btn,
+  .theme-toggle {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .main-body {
+    padding: 0 !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+    break-inside: avoid;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
